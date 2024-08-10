@@ -1,0 +1,16 @@
+.idea
+
+PSchool.Web/obj/*
+PSchool.Web/bin/*
+
+PSchool.DAL/obj/*
+PSchool.DAL/bin/*
+
+PSchool.BLL/obj/*
+PSchool.BLL/bin/*
+
+PSchool.Test/obj/*
+PSchool.Test/bin/*
+
+appsettings.*.json
+
