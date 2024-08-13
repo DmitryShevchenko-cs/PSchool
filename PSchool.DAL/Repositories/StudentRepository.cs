@@ -1,27 +1,39 @@
+using Microsoft.EntityFrameworkCore;
 using PSchool.DAL.Entities;
 using PSchool.DAL.Repositories.Interfaces;
 
 namespace PSchool.DAL.Repositories;
 
-public class StudentRepository : IStudentRepository
+public class StudentRepository(PSchoolDbContext pSchoolDbContext) : IStudentRepository
 {
-    public Task InsertDataAsync(Student entity, CancellationToken cancellationToken = default)
+    public async Task<Student> InsertDataAsync(Student entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var entityEntry = await pSchoolDbContext.Students.AddAsync(entity, cancellationToken);
+        await pSchoolDbContext.SaveChangesAsync(cancellationToken);
+        return entityEntry.Entity;
     }
 
-    public Task DeleteDataAsync(Student entity, CancellationToken cancellationToken = default)
+    public async Task DeleteDataAsync(Student entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        pSchoolDbContext.Students.Remove(entity);
+        await pSchoolDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task UpdateDataAsync(Student entity, CancellationToken cancellationToken = default)
+    public async Task<Student> UpdateDataAsync(Student entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var entityEntry = pSchoolDbContext.Students.Update(entity);
+        await pSchoolDbContext.SaveChangesAsync(cancellationToken);
+        return entityEntry.Entity;
     }
 
-    public Task GetById(Student entity, CancellationToken cancellationToken = default)
+    public async Task<Student?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await pSchoolDbContext.Students.Include(r => r.Parents)
+            .SingleOrDefaultAsync(i => i.Id == id, cancellationToken);
+    }
+
+    public IQueryable<Student> GetAll()
+    {
+        return pSchoolDbContext.Students.Include(p => p.Parents).AsQueryable();
     }
 }
