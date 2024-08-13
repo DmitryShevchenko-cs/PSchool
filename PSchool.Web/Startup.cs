@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PSchool.DAL;
+using PSchool.DAL.Repositories;
+using PSchool.DAL.Repositories.Interfaces;
 
 namespace PSchool.Web;
 
@@ -17,6 +19,9 @@ public class Startup
     {
         var connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING") ?? Configuration.GetConnectionString("ConnectionString");
 
+        services.AddScoped<IParentRepository, ParentRepository>();
+        services.AddScoped<IStudentRepository, StudentRepository>();
+        
         services.AddDbContext<PSchoolDbContext>(options =>
             options.UseSqlServer(connectionString));
     }
