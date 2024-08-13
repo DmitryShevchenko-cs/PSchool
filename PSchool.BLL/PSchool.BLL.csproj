@@ -7,8 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Models\" />
-      <Folder Include="Services\Interfaces\" />
+      <ProjectReference Include="..\PSchool.DAL\PSchool.DAL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
     </ItemGroup>
 
 </Project>
