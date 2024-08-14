@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 using PSchool.DAL;
 using PSchool.DAL.Repositories;
 using PSchool.DAL.Repositories.Interfaces;
@@ -17,6 +18,9 @@ public class Startup
     //service to adding dependency injection 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddControllers().AddNewtonsoftJson(opt => 
+            opt.SerializerSettings.Converters.Add(new StringEnumConverter()));
+        
         var connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING") ?? Configuration.GetConnectionString("ConnectionString");
 
         services.AddScoped<IParentRepository, ParentRepository>();

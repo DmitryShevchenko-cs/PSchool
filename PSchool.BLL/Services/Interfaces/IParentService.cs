@@ -13,6 +13,6 @@ public interface IParentService
     Task<PaginationResponse<ParentModel>> GetParentsAsync(PaginationRequest paginationRequest,
         CancellationToken cancellationToken = default);
     
-    Task<PaginationResponse<ParentModel>> GetParentsByStudentIdAsync(int studentId, PaginationRequest paginationRequest,
+    Task<List<ParentModel>> GetParentsByStudentIdAsync(int studentId,
         CancellationToken cancellationToken = default);
 }

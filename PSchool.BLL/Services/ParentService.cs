@@ -94,17 +94,11 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
             paginationRequest.PageSize);
     }
 
-    public async Task<PaginationResponse<ParentModel>> GetParentsByStudentIdAsync(int studentId, PaginationRequest paginationRequest,
-        CancellationToken cancellationToken = default)
+    public async Task<List<ParentModel>> GetParentsByStudentIdAsync(int studentId, CancellationToken cancellationToken = default)
     {
         var parents = await parentRepository.GetAll().Where(r => r.Children.Any(i => i.Id == studentId))
-            .Pagination(paginationRequest.CurrentPage, paginationRequest.PageSize)
             .ToListAsync(cancellationToken);
-        
-        return new PaginationResponse<ParentModel>(
-            mapper.Map<List<ParentModel>>(parents),
-            parents.Count,
-            paginationRequest.CurrentPage,
-            paginationRequest.PageSize);
+
+        return mapper.Map<List<ParentModel>>(parents);
     }
 }
