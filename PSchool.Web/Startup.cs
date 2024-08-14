@@ -1,5 +1,9 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
+using PSchool.BLL.Services;
+using PSchool.BLL.Services.Interfaces;
 using PSchool.DAL;
 using PSchool.DAL.Repositories;
 using PSchool.DAL.Repositories.Interfaces;
@@ -26,8 +30,23 @@ public class Startup
         services.AddScoped<IParentRepository, ParentRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
         
+        services.AddScoped<IStudentService, StudentService>();
+        services.AddScoped<IParentService, ParentService>();
+        services.AddAutoMapper(typeof(Startup));
+        
         services.AddDbContext<PSchoolDbContext>(options =>
             options.UseSqlServer(connectionString));
+        
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "PSchool API",
+                Version = "v1",
+                Description = "PSchool API"
+            });
+        });
+        
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,6 +54,11 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Transaction API V1");
+            });
         }
         else
         {
@@ -48,5 +72,11 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseStaticFiles();
+        
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+        
     }
 }

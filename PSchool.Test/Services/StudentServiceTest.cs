@@ -62,7 +62,7 @@ public class StudentServiceTest : DefaultServiceTest<IStudentService, StudentSer
     }
 
     [Test]
-    public async Task CreateStudentWitOutParent_AddParent()
+    public async Task CreateStudentWitOutParent_AddParents_DelParent()
     {
         var parentService = ServiceProvider.GetRequiredService<IParentService>();
 
@@ -122,6 +122,12 @@ public class StudentServiceTest : DefaultServiceTest<IStudentService, StudentSer
         Assert.That(student2.Parents, Has.Count.EqualTo(2));
         Assert.That(student2.Parents.Select(r => r.Email), Does.Contain(parent2.Email));
         Assert.That(student2.Parents.Select(r => r.Email), Does.Contain(parent1.Email));
+
+        student2 = await Service.RemoveParent(student2.Id, parent1.Id);
+        Assert.That(student2.Parents, Has.Count.EqualTo(1));
+        Assert.That(student2.Parents.Select(r => r.Email), Does.Contain(parent2.Email));
+        Assert.That(student2.Parents.Select(r => r.Email), Does.Not.Contain(parent1.Email));
+
     }
 
     [Test]

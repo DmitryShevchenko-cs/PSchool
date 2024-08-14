@@ -12,39 +12,34 @@ public class MapperModelsConfig : Profile
         CreateMap<Student, StudentModel>()
             .ReverseMap();
         
-        CreateMap<Parent, ParentModel>()
-            .ReverseMap();
-        
-        
         CreateMap<StudentModel, StudentViewModel>()
-            .AfterMap((src, dest) => 
-            {
-                foreach (var parent in dest.Parents)
-                {
-                    parent.Children = null!;
-                }
-            })
             .ReverseMap();
         
         CreateMap<StudentModel, StudentCreateModel>()
-            .AfterMap((src, dest) =>
-            {
-                foreach (var parent in dest.Parents)
-                {
-                    parent.StudentsEmails = null!;
-                }
-            })
+            .ReverseMap();
+        
+        CreateMap<StudentModel, StudentPropModel>()
+            .ReverseMap();
+        
+        CreateMap<StudentModel, StudentUpdateModel>()
+            .ReverseMap();
+        
+        
+        CreateMap<Parent, ParentModel>()
             .ReverseMap();
         
         CreateMap<ParentModel, ParentViewModel>()
-            .AfterMap((src, dest) => 
-            {
-                foreach (var child in dest.Children)
-                {
-                    child.Parents = null!;
-                }
-            })
             .ReverseMap();
+        
+        CreateMap<ParentModel, ParentViewModel>()
+            .ReverseMap();
+        
+        CreateMap<ParentModel, ParentPropModel>()
+            .ReverseMap();
+        
+        CreateMap<ParentModel, ParentUpdateModel>()
+            .ReverseMap();
+        
         
         CreateMap<ParentCreateModel, ParentModel>()
             .AfterMap((src, dest) => 
@@ -58,6 +53,15 @@ public class MapperModelsConfig : Profile
                 }
             })
             .ReverseMap();
+
+        CreatePaginationResultMapping<ParentModel, ParentViewModel>();
+        CreatePaginationResultMapping<StudentModel, StudentViewModel>();
         
+    }
+
+    private void CreatePaginationResultMapping<TViewModel, TModel>()
+    {
+        CreateMap<PaginationResponse<TViewModel>, PaginationResponse<TModel>>()
+            .ReverseMap();
     }
 }

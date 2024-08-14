@@ -48,11 +48,13 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
         return mapper.Map<ParentModel>(parentDb);
     }
 
+    
+    
     public async Task DeleteParentAsync(int parentId, CancellationToken cancellationToken = default)
     {
         var parentDb = await parentRepository.GetByIdAsync(parentId, cancellationToken);
         if (parentDb is null)
-            throw new ParentNotFoundException($"Student with id-{parentId} not found");
+            throw new ParentNotFoundException($"Parent with id-{parentId} not found");
         await parentRepository.DeleteDataAsync(parentDb, cancellationToken);
     }
 
@@ -60,7 +62,7 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
     {
         var parentDb = await parentRepository.GetByIdAsync(parent.Id, cancellationToken);
         if (parentDb is null)
-            throw new StudentNotFoundException($"Student with id-{parent.Id} not found");
+            throw new StudentNotFoundException($"Parent with id-{parent.Id} not found");
 
         foreach (var propertyMap in ReflectionHelper.WidgetUtil<ParentModel, Parent>.PropertyMap)
         {
@@ -70,7 +72,7 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
             var studentSourceValue = studentProperty.GetValue(parent);
             var studentTargetValue = studentDbProperty.GetValue(parentDb);
 
-            if (studentSourceValue != null && studentProperty.Name != "Email" && studentDbProperty.Name != "PhoneNumber" && 
+            if (studentSourceValue != null && studentProperty.Name != "Email" && studentDbProperty.Name != "PhoneNumber" && studentDbProperty.Name != "Children" &&
                 !ReferenceEquals(studentSourceValue, "") && !studentSourceValue.Equals(studentTargetValue))
             {
                 studentDbProperty.SetValue(parentDb, studentSourceValue);
@@ -100,5 +102,12 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
             .ToListAsync(cancellationToken);
 
         return mapper.Map<List<ParentModel>>(parents);
+    }
+
+    public async Task<ParentModel> GetParentsByIdAsync(int parentId, CancellationToken cancellationToken = default)
+    {
+        var parent = await parentRepository.GetByIdAsync(parentId, cancellationToken);
+
+        return mapper.Map<ParentModel>(parent);
     }
 }

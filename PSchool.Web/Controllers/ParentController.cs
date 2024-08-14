@@ -19,11 +19,11 @@ public class ParentController(IParentService parentService, IMapper mapper) : Co
         return Ok(mapper.Map<PaginationResponse<ParentViewModel>>(parents));
     }
        
-    [HttpGet("{studentId:int}")]
-    public async Task<IActionResult> GetParentsByStudentIdAsync(int studentId, CancellationToken cancellationToken)
+    [HttpGet("{parentId:int}")]
+    public async Task<IActionResult> GetByIdAsync(int parentId, CancellationToken cancellationToken)
     {
-        var parents = await parentService.GetParentsByStudentIdAsync(studentId, cancellationToken);
-        return Ok(mapper.Map<List<ParentViewModel>>(parents));
+        var parent = await parentService.GetParentsByIdAsync(parentId, cancellationToken);
+        return Ok(mapper.Map<ParentViewModel>(parent));
     }
 
     [HttpPost]
@@ -34,7 +34,7 @@ public class ParentController(IParentService parentService, IMapper mapper) : Co
     }
     
     [HttpPut]
-    public async Task<IActionResult> UpdateParent([FromBody] ParentCreateModel parentCreateModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateParent([FromBody] ParentUpdateModel parentCreateModel, CancellationToken cancellationToken)
     {
         var parent = await parentService.UpdateParentAsync(mapper.Map<ParentModel>(parentCreateModel), cancellationToken);
         return Ok(mapper.Map<ParentViewModel>(parent));
