@@ -34,7 +34,7 @@ public class MapperModelsConfig : Profile
         CreateMap<ParentModel, ParentViewModel>()
             .ReverseMap();
         
-        CreateMap<ParentModel, ParentPropModel>()
+        CreateMap<ParentModel, BaseViewModel>()
             .ReverseMap();
         
         CreateMap<ParentModel, ParentUpdateModel>()
