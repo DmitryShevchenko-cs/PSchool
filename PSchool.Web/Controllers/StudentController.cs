@@ -18,14 +18,14 @@ public class StudentController(IStudentService studentService, IParentService pa
         CancellationToken cancellationToken, [FromQuery] string? parentName = null)
     {
         var parents = await studentService.GetStudentsAsync(paginationRequest, parentName, cancellationToken);
-        return Ok(mapper.Map<PaginationResponse<Models.StudentViewModel>>(parents));
+        return Ok(mapper.Map<PaginationResponse<StudentViewModel>>(parents));
     }
        
     [HttpGet("{studentId:int}")]
     public async Task<IActionResult> GetStudentByIdAsync(int studentId, CancellationToken cancellationToken)
     {
         var parents = await studentService.GetStudentByIdAsync(studentId, cancellationToken);
-        return Ok(mapper.Map<Models.StudentViewModel>(parents));
+        return Ok(mapper.Map<StudentViewModel>(parents));
     }
     
     [HttpGet("parents/{studentId:int}")]
@@ -39,21 +39,21 @@ public class StudentController(IStudentService studentService, IParentService pa
     public async Task<IActionResult> CreateParent([FromBody] StudentCreateModel parentCreateModel, CancellationToken cancellationToken)
     {
         var parent = await studentService.CreateStudentAsync(mapper.Map<StudentModel>(parentCreateModel), cancellationToken);
-        return Ok(mapper.Map<Models.StudentViewModel>(parent));
+        return Ok(mapper.Map<StudentViewModel>(parent));
     }
     
     [HttpPut]
     public async Task<IActionResult> UpdateParent([FromBody] StudentUpdateModel parentCreateModel, CancellationToken cancellationToken)
     {
         var parent = await studentService.UpdateStudentAsync(mapper.Map<StudentModel>(parentCreateModel), cancellationToken);
-        return Ok(mapper.Map<Models.StudentViewModel>(parent));
+        return Ok(mapper.Map<StudentViewModel>(parent));
     }
     
     [HttpDelete("parent")]
     public async Task<IActionResult> UpdateParent([FromQuery]int studentId, [FromQuery]int parentId, CancellationToken cancellationToken)
     {
         var parent = await studentService.RemoveParent(studentId, parentId, cancellationToken);
-        return Ok(mapper.Map<Models.StudentViewModel>(parent));
+        return Ok(mapper.Map<StudentViewModel>(parent));
     }
     
     [HttpDelete("{studentId:int}")]

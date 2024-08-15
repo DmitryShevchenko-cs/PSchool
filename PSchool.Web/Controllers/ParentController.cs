@@ -30,14 +30,14 @@ public class ParentController(IParentService parentService, IMapper mapper) : Co
     [HttpPost]
     public async Task<IActionResult> CreateParent([FromBody] ParentCreateModel parentCreateModel, CancellationToken cancellationToken)
     {
-        var parent = await parentService.CreateParentAsync(mapper.Map<BLL.Models.ParentModel>(parentCreateModel), cancellationToken);
+        var parent = await parentService.CreateParentAsync(mapper.Map<ParentModel>(parentCreateModel), cancellationToken);
         return Ok(mapper.Map<ParentViewModel>(parent));
     }
     
     [HttpPut]
     public async Task<IActionResult> UpdateParent([FromBody] ParentUpdateModel parentCreateModel, CancellationToken cancellationToken)
     {
-        var parent = await parentService.UpdateParentAsync(mapper.Map<BLL.Models.ParentModel>(parentCreateModel), cancellationToken);
+        var parent = await parentService.UpdateParentAsync(mapper.Map<ParentModel>(parentCreateModel), cancellationToken);
         return Ok(mapper.Map<ParentViewModel>(parent));
     }
     
