@@ -1,4 +1,6 @@
 using System.Reflection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
@@ -7,6 +9,7 @@ using PSchool.BLL.Services.Interfaces;
 using PSchool.DAL;
 using PSchool.DAL.Repositories;
 using PSchool.DAL.Repositories.Interfaces;
+using PSchool.Web.Validators;
 
 namespace PSchool.Web;
 
@@ -27,16 +30,18 @@ public class Startup
         
         var connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING") ?? Configuration.GetConnectionString("ConnectionString");
 
-        services.AddScoped<IParentRepository, ParentRepository>();
-        services.AddScoped<IStudentRepository, StudentRepository>();
-        
-        services.AddScoped<IStudentService, StudentService>();
-        services.AddScoped<IParentService, ParentService>();
-        services.AddAutoMapper(typeof(Startup));
-        
         services.AddDbContext<PSchoolDbContext>(options =>
             options.UseSqlServer(connectionString));
         
+        //services di
+        services.AddScoped<IParentRepository, ParentRepository>();
+        services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<IStudentService, StudentService>();
+        services.AddScoped<IParentService, ParentService>();
+        
+        services.AddAutoMapper(typeof(Startup));
+        
+        //swagger
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo
@@ -47,6 +52,14 @@ public class Startup
             });
         });
         
+        //inject dependency of FluentValidation
+        services.AddFluentValidationAutoValidation();
+        services.AddFluentValidationClientsideAdapters();
+        services.AddValidatorsFromAssemblyContaining<BaseModelValidator>();
+        services.AddValidatorsFromAssemblyContaining<StudentCreateValidator>();
+        services.AddValidatorsFromAssemblyContaining<StudentUpdateValidator>();
+        services.AddValidatorsFromAssemblyContaining<ParentCreateValidator>();
+        services.AddValidatorsFromAssemblyContaining<ParentUpdateValidator>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

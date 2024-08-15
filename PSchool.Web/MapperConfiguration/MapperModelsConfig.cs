@@ -2,6 +2,9 @@ using AutoMapper;
 using PSchool.BLL.Models;
 using PSchool.DAL.Entities;
 using PSchool.Web.Models;
+using BaseModel = PSchool.Web.Models.BaseModel;
+using ParentModel = PSchool.Web.Models.ParentModel;
+using StudentModel = PSchool.Web.Models.StudentModel;
 
 namespace PSchool.Web.MapperConfiguration;
 
@@ -9,44 +12,41 @@ public class MapperModelsConfig : Profile
 {
     public MapperModelsConfig()
     {
-        CreateMap<Student, StudentModel>()
+        CreateMap<Student, BLL.Models.StudentModel>()
             .ReverseMap();
         
-        CreateMap<StudentModel, StudentViewModel>()
+        CreateMap<BLL.Models.StudentModel, StudentModel>()
             .ReverseMap();
         
-        CreateMap<StudentModel, StudentCreateModel>()
+        CreateMap<BLL.Models.StudentModel, StudentCreateModel>()
             .ReverseMap();
         
-        CreateMap<StudentModel, StudentPropModel>()
+        CreateMap<BLL.Models.StudentModel, StudentPropModel>()
             .ReverseMap();
         
-        CreateMap<StudentModel, StudentUpdateModel>()
-            .ReverseMap();
-        
-        
-        CreateMap<Parent, ParentModel>()
-            .ReverseMap();
-        
-        CreateMap<ParentModel, ParentViewModel>()
-            .ReverseMap();
-        
-        CreateMap<ParentModel, ParentViewModel>()
-            .ReverseMap();
-        
-        CreateMap<ParentModel, BaseViewModel>()
-            .ReverseMap();
-        
-        CreateMap<ParentModel, ParentUpdateModel>()
+        CreateMap<BLL.Models.StudentModel, StudentUpdateModel>()
             .ReverseMap();
         
         
-        CreateMap<ParentCreateModel, ParentModel>()
+        CreateMap<Parent, BLL.Models.ParentModel>()
+            .ReverseMap();
+        
+        CreateMap<BLL.Models.ParentModel, ParentModel>()
+            .ReverseMap();
+        
+        CreateMap<BLL.Models.ParentModel, ParentModel>()
+            .ReverseMap();
+        
+        CreateMap<BLL.Models.ParentModel, ParentUpdateModel>()
+            .ReverseMap();
+        
+        
+        CreateMap<ParentCreateModel, BLL.Models.ParentModel>()
             .AfterMap((src, dest) => 
             {
                 foreach (var email in src.StudentsEmails)
                 {
-                    dest.Children.Add(new StudentModel()
+                    dest.Children.Add(new BLL.Models.StudentModel()
                     {
                         Email = email
                     });
@@ -54,8 +54,8 @@ public class MapperModelsConfig : Profile
             })
             .ReverseMap();
 
-        CreatePaginationResultMapping<ParentModel, ParentViewModel>();
-        CreatePaginationResultMapping<StudentModel, StudentViewModel>();
+        CreatePaginationResultMapping<BLL.Models.ParentModel, ParentModel>();
+        CreatePaginationResultMapping<BLL.Models.StudentModel, StudentModel>();
         
     }
 

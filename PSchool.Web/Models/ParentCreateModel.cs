@@ -1,6 +1,6 @@
 namespace PSchool.Web.Models;
 
-public class ParentCreateModel : BaseViewModel
+public class ParentCreateModel : BaseModel
 {
     public ICollection<string> StudentsEmails { get; set; } = null!;
 }

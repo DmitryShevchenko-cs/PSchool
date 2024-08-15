@@ -1,6 +1,6 @@
 namespace PSchool.Web.Models;
 
-public class BaseViewModel
+public class BaseModel
 {
     public int Id { get; set; }
     public string FirstName { get; set; } = null!;
