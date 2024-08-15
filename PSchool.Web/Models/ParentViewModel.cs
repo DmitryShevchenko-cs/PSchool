@@ -1,6 +1,6 @@
 namespace PSchool.Web.Models;
 
-public class ParentModel : BaseModel
+public class ParentViewModel : BaseModel
 {
     public ICollection<StudentPropModel> Children { get; set; } = null!;
 }
