@@ -1,10 +1,10 @@
-namespace PSchool.BLL.Models;
+namespace PSchool.Web.Models;
 
-public class ParentModel : BaseModel
+public class BaseModel
 {
+    public int Id { get; set; }
     public string FirstName { get; set; } = null!;
     public string SecondName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
-    public ICollection<StudentModel> Children { get; set; } = new List<StudentModel>();
 }

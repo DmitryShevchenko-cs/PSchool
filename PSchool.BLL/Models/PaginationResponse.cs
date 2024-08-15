@@ -1,6 +1,6 @@
 namespace PSchool.BLL.Models;
 
-public class PaginationResponse<T> where T : class
+public class PaginationResponse<T> 
 {
     public IEnumerable<T> Data { get; set; } = null!;
     public int PageNumber { get; set; }
@@ -16,4 +16,6 @@ public class PaginationResponse<T> where T : class
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         Data = data;
     }
+    
+    public PaginationResponse() { }
 }

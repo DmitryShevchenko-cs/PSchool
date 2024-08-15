@@ -36,6 +36,23 @@ public class StudentService(IStudentRepository studentRepository, IParentReposit
         await studentRepository.DeleteDataAsync(studentDb, cancellationToken);
     }
 
+    public async Task<StudentModel> RemoveParent(int studentId, int parentId, CancellationToken cancellationToken = default)
+    {
+        var studentDb = await studentRepository.GetByIdAsync(studentId, cancellationToken);
+        if (studentDb is null)
+            throw new StudentNotFoundException($"Student with id-{parentId} not found");
+        
+        var parentDb = await parentRepository.GetByIdAsync(parentId, cancellationToken);
+        if (parentDb is null)
+            throw new ParentNotFoundException($"Parent with id-{parentId} not found");
+
+        studentDb.Parents.Remove(parentDb);
+
+        var student = await studentRepository.UpdateDataAsync(studentDb, cancellationToken);
+
+        return mapper.Map<StudentModel>(student);
+    }
+    
     public async Task<StudentModel> UpdateStudentAsync(StudentModel student, CancellationToken cancellationToken = default)
     {
         var studentDb = await studentRepository.GetByIdAsync(student.Id, cancellationToken);
@@ -50,7 +67,7 @@ public class StudentService(IStudentRepository studentRepository, IParentReposit
             var studentSourceValue = studentProperty.GetValue(student);
             var studentTargetValue = studentDbProperty.GetValue(studentDb);
 
-            if (studentSourceValue != null && studentDbProperty.Name != "Email" && studentDbProperty.Name != "PhoneNumber" && 
+            if (studentSourceValue != null && studentDbProperty.Name != "Email" && studentDbProperty.Name != "PhoneNumber" && studentDbProperty.Name != "Parents" &&
                 !ReferenceEquals(studentSourceValue, "") && !studentSourceValue.Equals(studentTargetValue))
             {
                 studentDbProperty.SetValue(studentDb, studentSourceValue);
