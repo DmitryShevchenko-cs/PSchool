@@ -3,7 +3,7 @@ using PSchool.Web.Models;
 
 namespace PSchool.Web.Validators;
 
-public class BaseModelValidator : AbstractValidator<BaseModel>
+public class BaseModelValidator : AbstractValidator<BaseViewModel>
 {
     public BaseModelValidator()
     {

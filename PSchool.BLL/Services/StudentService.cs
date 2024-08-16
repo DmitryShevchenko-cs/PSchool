@@ -45,9 +45,12 @@ public class StudentService(IStudentRepository studentRepository, IParentReposit
         var parentDb = await parentRepository.GetByIdAsync(parentId, cancellationToken);
         if (parentDb is null)
             throw new ParentNotFoundException($"Parent with id-{parentId} not found");
-
+        
         studentDb.Parents.Remove(parentDb);
-
+        if (parentDb.Children.Count == 1)
+        {
+            await parentRepository.DeleteDataAsync(parentDb, cancellationToken);
+        }
         var student = await studentRepository.UpdateDataAsync(studentDb, cancellationToken);
 
         return mapper.Map<StudentModel>(student);
@@ -55,6 +58,19 @@ public class StudentService(IStudentRepository studentRepository, IParentReposit
     
     public async Task<StudentModel> UpdateStudentAsync(StudentModel student, CancellationToken cancellationToken = default)
     {
+        var alreadyExist = await studentRepository.GetAll()
+            .Where(r => r.Email == student.Email && r.Id != student.Id)
+            .ToListAsync(cancellationToken);
+        if (alreadyExist.Count != 0)
+            throw new EmailExistsException($"Account with this email is already exists");
+        
+        alreadyExist = await studentRepository.GetAll()
+            .Where(r => r.PhoneNumber == student.PhoneNumber && r.Id != student.Id)
+            .ToListAsync(cancellationToken);
+        if (alreadyExist.Count != 0)
+            throw new EmailExistsException($"Account with this phone number is already exists");
+        
+            
         var studentDb = await studentRepository.GetByIdAsync(student.Id, cancellationToken);
         if (studentDb is null)
             throw new StudentNotFoundException($"Student with id-{student.Id} not found");
@@ -67,7 +83,7 @@ public class StudentService(IStudentRepository studentRepository, IParentReposit
             var studentSourceValue = studentProperty.GetValue(student);
             var studentTargetValue = studentDbProperty.GetValue(studentDb);
 
-            if (studentSourceValue != null && studentDbProperty.Name != "Email" && studentDbProperty.Name != "PhoneNumber" && studentDbProperty.Name != "Parents" &&
+            if (studentSourceValue != null && studentDbProperty.Name != "Parents" &&
                 !ReferenceEquals(studentSourceValue, "") && !studentSourceValue.Equals(studentTargetValue))
             {
                 studentDbProperty.SetValue(studentDb, studentSourceValue);
@@ -107,8 +123,8 @@ public class StudentService(IStudentRepository studentRepository, IParentReposit
         var students = await query.Pagination(paginationRequest.CurrentPage, paginationRequest.PageSize).ToListAsync(cancellationToken);
         
         return new PaginationResponse<StudentModel>(
-            mapper.Map<List<StudentModel>>(students),
-            students.Count,
+            mapper.Map<List<StudentModel>>(students), 
+            studentRepository.GetAll().Count(),
             paginationRequest.CurrentPage,
             paginationRequest.PageSize);
     }

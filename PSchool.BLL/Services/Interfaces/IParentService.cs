@@ -16,6 +16,6 @@ public interface IParentService
     
     Task<List<ParentModel>> GetParentsByStudentIdAsync(int studentId,
         CancellationToken cancellationToken = default);
-    Task<ParentModel> GetParentsByIdAsync(int parentId,
+    Task<ParentModel> GetByIdAsync(int parentId,
         CancellationToken cancellationToken = default);
 }

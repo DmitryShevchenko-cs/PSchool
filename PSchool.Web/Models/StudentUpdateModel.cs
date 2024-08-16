@@ -1,6 +1,6 @@
 namespace PSchool.Web.Models;
 
-public class StudentUpdateModel : BaseModel
+public class StudentUpdateModel : BaseViewModel
 {
     public string Group { get; set; } = null!;
 }

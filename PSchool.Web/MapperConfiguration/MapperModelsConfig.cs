@@ -2,7 +2,6 @@ using AutoMapper;
 using PSchool.BLL.Models;
 using PSchool.DAL.Entities;
 using PSchool.Web.Models;
-using BaseModel = PSchool.Web.Models.BaseModel;
 
 namespace PSchool.Web.MapperConfiguration;
 
@@ -14,6 +13,9 @@ public class MapperModelsConfig : Profile
             .ReverseMap();
         
         CreateMap<StudentModel, StudentViewModel>()
+            .ReverseMap();
+        
+        CreateMap<StudentModel, BaseViewModel>()
             .ReverseMap();
         
         CreateMap<StudentModel, StudentCreateModel>()
@@ -32,14 +34,17 @@ public class MapperModelsConfig : Profile
         CreateMap<ParentModel, ParentViewModel>()
             .ReverseMap();
         
+        CreateMap<ParentModel, BaseViewModel>()
+            .ReverseMap();
+        
         CreateMap<ParentModel, ParentViewModel>()
             .ReverseMap();
         
-        CreateMap<ParentModel, ParentUpdateModel>()
+        CreateMap<ParentModel, ParentUpdateViewModel>()
             .ReverseMap();
         
         
-        CreateMap<ParentCreateModel, ParentModel>()
+        CreateMap<ParentCreateViewModel, ParentModel>()
             .AfterMap((src, dest) => 
             {
                 foreach (var email in src.StudentsEmails)

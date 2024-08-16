@@ -50,7 +50,7 @@ public class StudentController(IStudentService studentService, IParentService pa
     }
     
     [HttpDelete("parent")]
-    public async Task<IActionResult> UpdateParent([FromQuery]int studentId, [FromQuery]int parentId, CancellationToken cancellationToken)
+    public async Task<IActionResult> RemoveParent([FromQuery]int studentId, [FromQuery]int parentId, CancellationToken cancellationToken)
     {
         var parent = await studentService.RemoveParent(studentId, parentId, cancellationToken);
         return Ok(mapper.Map<StudentViewModel>(parent));

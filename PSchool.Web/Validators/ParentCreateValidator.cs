@@ -4,7 +4,7 @@ using PSchool.Web.Models;
 
 namespace PSchool.Web.Validators;
 
-public class ParentCreateValidator : AbstractValidator<ParentCreateModel>
+public class ParentCreateValidator : AbstractValidator<ParentCreateViewModel>
 {
     public ParentCreateValidator()
     {

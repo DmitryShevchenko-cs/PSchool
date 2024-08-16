@@ -127,7 +127,10 @@ public class StudentServiceTest : DefaultServiceTest<IStudentService, StudentSer
         Assert.That(student2.Parents, Has.Count.EqualTo(1));
         Assert.That(student2.Parents.Select(r => r.Email), Does.Contain(parent2.Email));
         Assert.That(student2.Parents.Select(r => r.Email), Does.Not.Contain(parent1.Email));
-
+        
+        student1 = await Service.RemoveParent(student1.Id, parent1.Id);
+        Assert.That(student1.Parents, Has.Count.EqualTo(0));
+        Assert.That(await parentService.GetByIdAsync(parent1.Id), Is.EqualTo(null));
     }
 
     [Test]
@@ -153,7 +156,7 @@ public class StudentServiceTest : DefaultServiceTest<IStudentService, StudentSer
 
         Assert.Multiple(() =>
         {
-            Assert.That(student.Email, Is.EqualTo(student1.Email));
+            Assert.That(student.Email, Is.EqualTo("ChangedEmail"));
             Assert.That(student.FirstName, Is.EqualTo("ChangedName"));
             Assert.That(student.SecondName, Is.EqualTo("ChangedSecondName"));
         });
@@ -164,10 +167,23 @@ public class StudentServiceTest : DefaultServiceTest<IStudentService, StudentSer
             {
                 FirstName = "Student",
                 SecondName = "1",
-                Email = "StudentTryToChange@gmail.com",
+                Email = "ChangedEmail",
                 PhoneNumber = "123123123",
                 Group = "320D",
             });
         });
+        
+        Assert.ThrowsAsync<EmailExistsException>(async () =>
+        {
+            await Service.UpdateStudentAsync(new StudentModel
+            {
+                FirstName = "Student",
+                SecondName = "1",
+                Email = "ChangedEmail",
+                PhoneNumber = "123123123",
+                Group = "320D",
+            });
+        });
+        
     }
 }

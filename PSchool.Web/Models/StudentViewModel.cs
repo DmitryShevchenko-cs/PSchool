@@ -1,7 +1,7 @@
 namespace PSchool.Web.Models;
 
-public class StudentViewModel : BaseModel
+public class StudentViewModel : BaseViewModel
 {
     public string Group { get; set; } = null!;
-    public ICollection<BaseModel> Parents { get; set; } = null!;
+    public ICollection<BaseViewModel> Parents { get; set; } = null!;
 }

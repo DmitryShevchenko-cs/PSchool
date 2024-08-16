@@ -3,7 +3,7 @@ using PSchool.Web.Models;
 
 namespace PSchool.Web.Validators;
 
-public class ParentUpdateValidator : AbstractValidator<ParentUpdateModel>
+public class ParentUpdateValidator : AbstractValidator<ParentUpdateViewModel>
 {
     public ParentUpdateValidator()
     {

@@ -18,19 +18,9 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
 {
     public async Task<ParentModel> CreateParentAsync(ParentModel parent, CancellationToken cancellationToken = default)
     {
-        var parentDb = await parentRepository.GetAll()
-            .SingleOrDefaultAsync(r => r.Email == parent.Email, cancellationToken);
-        if (parentDb is not null)
-            throw new EmailExistsException($"Account with this email is already exists");
-        
-        parentDb = await parentRepository.GetAll()
-            .SingleOrDefaultAsync(r => r.PhoneNumber == parent.PhoneNumber, cancellationToken);
-        if (parentDb is not null)
-            throw new EmailExistsException($"Account with this phone number is already exists");
-        
         if (parent.Children.Count == 0)
             throw new StudentNotFoundException("Children are not registered as students");
-        
+        // get children by emails
         var childEmails = parent.Children.Select(i => i.Email).ToList();
         var children = await studentRepository.GetAll()
             .Where(r => childEmails.Contains(r.Email))
@@ -39,17 +29,36 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
         if (children.Count == 0)
             throw new StudentNotFoundException("Children are not registered as students");
         
-        parent.Children = null!;
-        parentDb = await parentRepository.InsertDataAsync(mapper.Map<Parent>(parent), cancellationToken);
+        //try to find all ready exist to update children list
+        var parentDb = await parentRepository.GetAll().Where(r =>
+            r.FirstName == parent.FirstName &&
+            r.SecondName == parent.SecondName &&
+            r.Email == parent.Email &&
+            r.PhoneNumber == parent.PhoneNumber).SingleOrDefaultAsync(cancellationToken);
         
+        if (parentDb is null)
+        {
+            //if we don`t find all ready exist parent create it
+            parentDb = await parentRepository.GetAll()
+                .SingleOrDefaultAsync(r => r.Email == parent.Email, cancellationToken);
+            if (parentDb is not null)
+                throw new EmailExistsException($"Account with this email is already exists");
+        
+            parentDb = await parentRepository.GetAll()
+                .SingleOrDefaultAsync(r => r.PhoneNumber == parent.PhoneNumber, cancellationToken);
+            if (parentDb is not null)
+                throw new EmailExistsException($"Account with this phone number is already exists");
+            
+            parent.Children = null!;
+            parentDb = await parentRepository.InsertDataAsync(mapper.Map<Parent>(parent), cancellationToken);
+        }
+        
+        //add children
         children.ForEach(child => parentDb.Children.Add(child));
         parentDb = await parentRepository.UpdateDataAsync(parentDb, cancellationToken);
-        
         return mapper.Map<ParentModel>(parentDb);
     }
-
-    
-    
+  
     public async Task DeleteParentAsync(int parentId, CancellationToken cancellationToken = default)
     {
         var parentDb = await parentRepository.GetByIdAsync(parentId, cancellationToken);
@@ -91,7 +100,7 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
         
         return new PaginationResponse<ParentModel>(
             mapper.Map<List<ParentModel>>(parents),
-            parents.Count,
+            parentRepository.GetAll().Count(),
             paginationRequest.CurrentPage,
             paginationRequest.PageSize);
     }
@@ -104,7 +113,7 @@ public class ParentService(IParentRepository parentRepository, IStudentRepositor
         return mapper.Map<List<ParentModel>>(parents);
     }
 
-    public async Task<ParentModel> GetParentsByIdAsync(int parentId, CancellationToken cancellationToken = default)
+    public async Task<ParentModel> GetByIdAsync(int parentId, CancellationToken cancellationToken = default)
     {
         var parent = await parentRepository.GetByIdAsync(parentId, cancellationToken);
 
