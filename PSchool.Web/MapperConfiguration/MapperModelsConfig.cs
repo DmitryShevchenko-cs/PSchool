@@ -45,15 +45,10 @@ public class MapperModelsConfig : Profile
         
         
         CreateMap<ParentCreateViewModel, ParentModel>()
-            .AfterMap((src, dest) => 
-            {
-                foreach (var email in src.StudentsEmails)
+            .AfterMap((src, dest) => { dest.Children.Add(new StudentModel()
                 {
-                    dest.Children.Add(new StudentModel()
-                    {
-                        Email = email
-                    });
-                }
+                    Email = src.StudentsEmail
+                });
             })
             .ReverseMap();
 

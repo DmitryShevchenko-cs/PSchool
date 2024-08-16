@@ -10,12 +10,9 @@ public class ParentCreateValidator : AbstractValidator<ParentCreateViewModel>
     {
         Include(new BaseModelValidator());
         
-        RuleFor(x => x.StudentsEmails)
-            .NotNull().WithMessage("StudentsEmails is required.")
-            .NotEmpty().WithMessage("StudentsEmails cannot be empty.")
-            .Must(emails => emails.All(email => !string.IsNullOrEmpty(email)))
-            .WithMessage("All student emails must be non-empty.")
-            .Must(emails => emails.All(email => new EmailAddressAttribute().IsValid(email)))
-            .WithMessage("All student emails must be valid email addresses.");
+        RuleFor(x => x.StudentsEmail)
+            .NotNull().WithMessage("Email is required.")
+            .NotEmpty().WithMessage("Email cannot be empty.")
+            .EmailAddress().WithMessage("Invalid email format.");
     }
 }
